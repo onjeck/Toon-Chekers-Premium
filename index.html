@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>Toon Checkers Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap');
+      
+      body {
+        font-family: 'Fredoka', sans-serif;
+        background-color: #1a1c29;
+        overflow: hidden; /* Prevent pull-to-refresh on mobile */
+        touch-action: none;
+      }
+
+      /* Custom Animations */
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      
+      @keyframes floatSlow {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(15px, -25px) rotate(8deg); }
+        66% { transform: translate(-15px, 15px) rotate(-8deg); }
+      }
+
+      @keyframes floatDistant {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+        50% { transform: translate(20px, -40px) scale(1.1); opacity: 0.6; }
+      }
+
+      @keyframes particleGlow {
+        0%, 100% { transform: scale(1); opacity: 0.2; }
+        50% { transform: scale(2); opacity: 0.5; }
+      }
+
+      @keyframes kingFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+      }
+      
+      @keyframes blink {
+        0%, 96%, 100% { transform: scaleY(1); }
+        98% { transform: scaleY(0.1); }
+      }
+
+      @keyframes popIn {
+        0% { transform: scale(0); opacity: 0; }
+        60% { transform: scale(1.2); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      
+      @keyframes crownEnter {
+        0% { transform: translate(-50%, 15px) scale(0); opacity: 0; }
+        60% { transform: translate(-50%, -4px) scale(1.2); opacity: 1; }
+        100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+      }
+
+      @keyframes crownSparkle {
+        0% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+        50% { transform: scale(1.1) rotate(5deg); filter: brightness(1.3); }
+        100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+      }
+      
+      @keyframes levitate {
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0); }
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      /* Camera Animations */
+      @keyframes zoomOutBoard {
+        0% { transform: scale(1) perspective(1000px) rotateX(0deg); filter: blur(0); }
+        100% { transform: scale(0.6) perspective(1000px) rotateX(15deg) translateY(-20px); filter: blur(1px); }
+      }
+
+      .animate-zoom-out {
+        animation: zoomOutBoard 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      /* Death Animations */
+      @keyframes death-poof {
+        0% { transform: scale(1); opacity: 1; filter: blur(0); }
+        30% { transform: scale(1.2); opacity: 1; filter: blur(2px); }
+        100% { transform: scale(0.1); opacity: 0; filter: blur(10px); }
+      }
+      
+      @keyframes death-melt {
+        0% { transform: scale(1) translateY(0); opacity: 1; }
+        100% { transform: scaleX(1.5) scaleY(0.1) translateY(40px); opacity: 0; }
+      }
+
+      @keyframes death-glitch {
+        0% { transform: translate(0); opacity: 1; filter: hue-rotate(0deg); }
+        20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+        40% { transform: translate(2px, -2px); filter: hue-rotate(180deg); }
+        60% { transform: translate(-2px, -2px); filter: hue-rotate(270deg); }
+        80% { transform: translate(2px, 2px); opacity: 0.5; }
+        100% { transform: scale(0); opacity: 0; }
+      }
+
+      @keyframes death-beam {
+        0% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
+        50% { transform: scaleX(0.5) scaleY(1.5) translateY(-50px); opacity: 0.8; filter: brightness(2); }
+        100% { transform: scaleX(0.1) scaleY(3) translateY(-200px); opacity: 0; }
+      }
+
+      /* Fighting Intro Animations */
+      @keyframes slideRound {
+        0% { transform: translateX(-100%) skewX(-20deg); opacity: 0; }
+        20% { transform: translateX(10%) skewX(-20deg); opacity: 1; }
+        30% { transform: translateX(0) skewX(0deg); opacity: 1; }
+        80% { transform: translateX(0); opacity: 1; }
+        100% { transform: translateX(100%) skewX(20deg); opacity: 0; }
+      }
+
+      @keyframes zoomFight {
+        0% { transform: scale(0); opacity: 0; filter: blur(20px); }
+        40% { transform: scale(1.5); opacity: 1; filter: blur(0); }
+        50% { transform: scale(1.2); opacity: 1; }
+        90% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(2); opacity: 0; }
+      }
+
+      @keyframes screenFlash {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 0.3; }
+      }
+      
+      @keyframes logoWave {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        25% { transform: translateY(-5px) rotate(-1deg); }
+        75% { transform: translateY(5px) rotate(1deg); }
+      }
+
+      .animate-float { animation: float 3s ease-in-out infinite; }
+      .animate-float-slow { animation: floatSlow 8s ease-in-out infinite; }
+      .animate-float-distant { animation: floatDistant 12s ease-in-out infinite; }
+      .animate-particle { animation: particleGlow 5s ease-in-out infinite; }
+      .animate-king-float { animation: kingFloat 4s ease-in-out infinite; }
+      .animate-blink { animation: blink 4s infinite; }
+      .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+      .animate-crown { animation: crownSparkle 2s infinite ease-in-out; }
+      .animate-crown-enter { animation: crownEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+      .animate-levitate-once { animation: levitate 1s ease-in-out; }
+      .animate-shake { animation: shake 0.2s ease-in-out 3; }
+      .animate-logo { animation: logoWave 4s ease-in-out infinite; }
+
+      .death-poof { animation: death-poof 0.6s ease-out forwards; }
+      .death-melt { animation: death-melt 0.8s ease-in forwards; }
+      .death-glitch { animation: death-glitch 0.5s linear forwards; }
+      .death-beam { animation: death-beam 0.7s ease-in forwards; }
+
+      .animate-slide-round { animation: slideRound 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+      .animate-zoom-fight { animation: zoomFight 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+      .animate-screen-flash { animation: screenFlash 0.3s ease-out; }
+
+      /* Utility for 3D feel */
+      .perspective-board {
+        perspective: 1200px;
+      }
+      .board-tilt {
+        transform: rotateX(15deg);
+        transform-style: preserve-3d;
+      }
+      
+      .login-gradient {
+        background: radial-gradient(circle at center, #2e1065 0%, #0f172a 100%);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
